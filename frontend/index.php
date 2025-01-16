@@ -80,6 +80,49 @@ if ($data === NULL) {
         .close-btn:hover {
             color: #000;
         }
+
+        /* Modal Alert */
+        #alertModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+        }
+
+        #alertModalOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        #alertMessage {
+            margin: 0;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: green;
+        }
+
+        #alertModal .close-btn {
+            cursor: pointer;
+            font-size: 20px;
+            color: #aaa;
+        }
+
+        #alertModal .close-btn:hover {
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -126,7 +169,30 @@ if ($data === NULL) {
         </form>
     </div>
 
+    <!-- Modal Alert -->
+    <div class="overlay" id="alertModalOverlay"></div>
+    <div class="modal" id="alertModal">
+        <span class="close-btn" onclick="closeAlertModal()">&times;</span>
+        <p id="alertMessage"></p>
+    </div>
+
     <script>
+        // Fungsi untuk menampilkan alert
+        function showAlert(message) {
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertModal').style.display = 'block';
+            document.getElementById('alertModalOverlay').style.display = 'block';
+
+            // Sembunyikan alert setelah 3 detik
+            setTimeout(closeAlertModal, 3000);
+        }
+
+        // Fungsi untuk menutup alert modal
+        function closeAlertModal() {
+            document.getElementById('alertModal').style.display = 'none';
+            document.getElementById('alertModalOverlay').style.display = 'none';
+        }
+
         // Fungsi untuk menghapus data
         function deleteData(id) {
             if (confirm('Apakah Anda yakin ingin menghapus data dengan ID ' + id + '?')) {
@@ -138,13 +204,13 @@ if ($data === NULL) {
                     if (data.message === 'Data deleted successfully') {
                         // Hapus baris tabel yang sesuai dengan ID
                         document.getElementById('row-' + id).remove();
-                        alert('Data berhasil dihapus');
+                        showAlert('Data berhasil dihapus');
                     } else {
-                        alert('Gagal menghapus data');
+                        showAlert('Gagal menghapus data');
                     }
                 })
                 .catch(error => {
-                    alert('Terjadi kesalahan: ' + error.message);
+                    showAlert('Terjadi kesalahan: ' + error.message);
                 });
             }
         }
@@ -186,14 +252,14 @@ if ($data === NULL) {
                     const row = document.getElementById('row-' + id);
                     row.cells[1].textContent = nama;
                     row.cells[2].textContent = umur;
-                    alert('Data berhasil diperbarui');
+                    showAlert('Data berhasil diperbarui');
                     closeEditModal();
                 } else {
-                    alert('Gagal memperbarui data');
+                    showAlert('Gagal memperbarui data');
                 }
             })
             .catch(error => {
-                alert('Terjadi kesalahan: ' + error.message);
+                showAlert('Terjadi kesalahan: ' + error.message);
             });
         });
     </script>
